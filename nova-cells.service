@@ -1,0 +1,9 @@
+[Unit]
+Description=Nova cells
+
+[Service]
+ExecStart=/usr/bin/nova-cells --config-file=/etc/nova/nova.conf
+User=nova
+
+[Install]
+WantedBy=multi-user.target

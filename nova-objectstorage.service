@@ -1,0 +1,9 @@
+[Unit]
+Description=Nova object storage
+
+[Service]
+ExecStart=/usr/bin/nova-objectstorage --config-file=/etc/nova/nova.conf
+User=nova
+
+[Install]
+WantedBy=multi-user.target

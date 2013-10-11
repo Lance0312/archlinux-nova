@@ -1,0 +1,9 @@
+[Unit]
+Description=Nova scheduler
+
+[Service]
+ExecStart=/usr/bin/nova-scheduler --config-file=/etc/nova/nova.conf
+User=nova
+
+[Install]
+WantedBy=multi-user.target

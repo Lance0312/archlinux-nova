@@ -1,0 +1,9 @@
+[Unit]
+Description=Nova OpenStack Compute API server
+
+[Service]
+ExecStart=/usr/bin/nova-api-os-compute --config-file=/etc/nova/nova.conf
+User=nova
+
+[Install]
+WantedBy=multi-user.target

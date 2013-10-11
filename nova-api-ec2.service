@@ -1,0 +1,9 @@
+[Unit]
+Description=Nova EC2 API server
+
+[Service]
+ExecStart=/usr/bin/nova-api-ec2 --config-file=/etc/nova/nova.conf
+User=nova
+
+[Install]
+WantedBy=sockets.target

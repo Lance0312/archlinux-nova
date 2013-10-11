@@ -1,0 +1,9 @@
+[Unit]
+Description=Nova cert
+
+[Service]
+ExecStart=/usr/bin/nova-cert --config-file=/etc/nova/nova.conf
+User=nova
+
+[Install]
+WantedBy=multi-user.target
