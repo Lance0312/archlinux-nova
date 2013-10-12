@@ -25,7 +25,7 @@ pkgname=('nova-api'
          'nova-spiceproxy'
          'python2-nova')
 
-pkgver=2013.2.rc1
+pkgver=2013.2.rc2
 pkgrel=1
 pkgdesc="OpenStack Compute"
 arch=(any)
@@ -34,7 +34,7 @@ license=('Apache')
 depends=('python2' 'python2-setuptools')
 makedepends=('python2-setuptools')
 install=nova.install
-source=("$url/havana/havana-rc1/+download/$pkgbase-$pkgver.tar.gz"
+source=("$url/havana/havana-rc2/+download/$pkgbase-$pkgver.tar.gz"
         "nova-api-ec2.service"
         "nova-api-metadata.service"
         "nova-api-os-compute.service"
@@ -54,7 +54,7 @@ source=("$url/havana/havana-rc1/+download/$pkgbase-$pkgver.tar.gz"
         "nova-spiceproxy.service"
         "nova.tmpfiles"
         "nova_sudoers")
-md5sums=('913ae27fea3b85aeafe80569a48a7062'
+md5sums=('3b8c2888799d12d862b96db187972036'
          '5f6a51b82bd293e2d854e2b5917dcd6c'
          '755796774821221622f09e600a0364b1'
          '3915c4fd03128a730ef08293c9010d7a'
