@@ -26,7 +26,7 @@ pkgname=('nova-api'
          'python2-nova')
 
 pkgver=2013.2.rc2
-pkgrel=1
+pkgrel=2
 pkgdesc="OpenStack Compute"
 arch=(any)
 url="https://launchpad.net/nova"
@@ -78,10 +78,12 @@ md5sums=('3b8c2888799d12d862b96db187972036'
 build() {
   cd "$pkgbase-$pkgver"
   /usr/bin/python2 setup.py build
+  /usr/bin/python2 setup.py build_sphinx
   /usr/bin/python2 setup.py install --root="$srcdir/tmp" \
-                           --install-data="/" \
-                           --optimize=1
-  cp -R etc/ $srcdir/tmp/
+                                    --install-data="/" \
+                                    --optimize=1
+  cp -R etc/ "$srcdir/tmp/"
+  cp -R doc/build/man/ "$srcdir/tmp/"
 }
 
 package_nova-api() {
@@ -182,6 +184,9 @@ package_nova-common() {
   install -d ${pkgdir}/usr/bin/
   install -m 755 usr/bin/nova-manage ${pkgdir}/usr/bin/
   install -m 755 usr/bin/nova-rootwrap ${pkgdir}/usr/bin/
+
+  install -d ${pkgdir}/usr/share/man/man1/
+  cp -R man/* ${pkgdir}/usr/share/man/man1/
 
   install -d -m 0750 ${pkgdir}/etc/sudoers.d/
   install -m 440 ${srcdir}/nova_sudoers ${pkgdir}/etc/sudoers.d/
