@@ -26,7 +26,7 @@ pkgname=('nova-api'
          'python2-nova')
 
 pkgver=2013.2
-pkgrel=1
+pkgrel=2
 pkgdesc="OpenStack Compute"
 epoch=$(date +%Y%m%d)
 arch=(any)
@@ -34,7 +34,6 @@ url="https://launchpad.net/nova"
 license=('Apache')
 depends=('python2' 'python2-setuptools')
 makedepends=('python2-setuptools')
-install=nova.install
 source=("$url/havana/2013.2/+download/$pkgbase-$pkgver.tar.gz"
         "nova-api-ec2.service"
         "nova-api-metadata.service"
@@ -169,6 +168,7 @@ package_nova-cert() {
 
 package_nova-common() {
   pkgdesc+=" - common"
+  install=nova.install
   depends=('python2-nova')
   backup=('etc/nova/nova.conf'
           'etc/nova/api-paste.ini')
