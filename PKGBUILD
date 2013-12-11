@@ -26,7 +26,7 @@ pkgname=('nova-api'
          'python2-nova')
 
 pkgver=2013.2
-pkgrel=2
+pkgrel=3
 pkgdesc="OpenStack Compute"
 epoch=$(date +%Y%m%d)
 arch=(any)
@@ -205,6 +205,8 @@ package_nova-compute() {
            'ebtables'
            'gawk'
            'iptables'
+           'libvirt'
+           'libvirt-python'
            'lsb-release'
            'nova-common'
            'open-iscsi'
@@ -219,8 +221,7 @@ package_nova-compute() {
 
 package_nova-compute-kvm() {
   pkgdesc+=" - compute node (KVM)"
-  depends=('libvirt'
-           'nova-compute'
+  depends=('nova-compute'
            'qemu')
   provides=('nova-compute-hypervisor')
   backup=('etc/nova/nova-compute.conf')
@@ -233,8 +234,7 @@ package_nova-compute-kvm() {
 
 package_nova-compute-lxc() {
   pkgdesc+=" - compute node (LXC)"
-  depends=('libvirt'
-           'nova-compute')
+  depends=('nova-compute')
   provides=('nova-compute-hypervisor')
   backup=('etc/nova/nova-compute.conf')
 
@@ -246,8 +246,7 @@ package_nova-compute-lxc() {
 
 package_nova-compute-qemu() {
   pkgdesc+=" - compute node (QEmu)"
-  depends=('libvirt'
-           'nova-compute'
+  depends=('nova-compute'
            'qemu')
   provides=('nova-compute-hypervisor')
   backup=('etc/nova/nova-compute.conf')
@@ -260,8 +259,7 @@ package_nova-compute-qemu() {
 
 package_nova-compute-uml() {
   pkgdesc+=" - compute node (UserModeLinux)"
-  depends=('libvirt'
-           'nova-compute'
+  depends=('nova-compute'
            'linux-usermode')
   provides=('nova-compute-hypervisor')
   backup=('etc/nova/nova-compute.conf')
@@ -274,8 +272,7 @@ package_nova-compute-uml() {
 
 package_nova-compute-xen() {
   pkgdesc+=" - compute node (Xen)"
-  depends=('libvirt'
-           'nova-compute'
+  depends=('nova-compute'
            'xen-4.3-git')
   provides=('nova-compute-hypervisor')
   backup=('etc/nova/nova-compute.conf')
