@@ -25,8 +25,8 @@ pkgname=('nova-api'
          'nova-spiceproxy'
          'python2-nova')
 
-pkgver=2013.2
-pkgrel=3
+pkgver=2013.2.3
+pkgrel=1
 pkgdesc="OpenStack Compute"
 epoch=$(date +%Y%m%d)
 arch=(any)
@@ -34,7 +34,7 @@ url="https://launchpad.net/nova"
 license=('Apache')
 depends=('python2' 'python2-setuptools')
 makedepends=('python2-setuptools')
-source=("$url/havana/2013.2/+download/$pkgbase-$pkgver.tar.gz"
+source=("$url/havana/2013.2.3/+download/$pkgbase-$pkgver.tar.gz"
         "nova-api-ec2.service"
         "nova-api-metadata.service"
         "nova-api-os-compute.service"
@@ -54,7 +54,7 @@ source=("$url/havana/2013.2/+download/$pkgbase-$pkgver.tar.gz"
         "nova-spiceproxy.service"
         "nova.tmpfiles"
         "nova_sudoers")
-md5sums=('dec2a8321504922a1beb8c4188c4e78c'
+md5sums=('58a1d6005f9819ed9d5c70293fcc7493'
          '5f6a51b82bd293e2d854e2b5917dcd6c'
          '755796774821221622f09e600a0364b1'
          '3915c4fd03128a730ef08293c9010d7a'
@@ -394,13 +394,13 @@ package_python2-nova() {
            'openssl'
            'python2-amqplib>=0.6.1'
            'python2-anyjson>=0.3.3'
-           'python2-babel>=0.9.6'
+           'python2-babel>=1.3.0'
            'python2-boto>=2.4.0'
-           'python2-cinderclient>=1.0.5'
+           'python2-cinderclient>=1.0.6'
            'python2-eventlet>=0.13.0'
            'python2-glanceclient>=0.9.0'
            'python2-greenlet>=0.3.2'
-           'python2-iso8601>=0.1.4'
+           'python2-iso8601>=0.1.8'
            'python2-jinja'
            'python2-jsonschema>=1.3.0'
            'python2-keystoneclient>=0.3.2'
@@ -417,10 +417,9 @@ package_python2-nova() {
            'python2-pbr<1.0.0'
            'python2-pyasn1'
            'python2-routes>=1.12.3'
-           'python2-six<1.4.0'
+           'python2-six>=1.4.1'
            'python2-sqlalchemy-0.7.9'
            'python2-stevedore>=0.10'
-           'python2-pytz'
            'python2-suds>=0.4'
            'python2-webob>=1.2.3'
            'python2-webob<1.3.0'
