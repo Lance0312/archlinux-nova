@@ -93,9 +93,9 @@ package_nova-api() {
   cd tmp
 
   install -D -m 644 etc/nova/rootwrap.d/api-metadata.filters \
-                    ${pkgdir}/etc/nova/rootwrap.d/api-metadata.filters
-  install -D -m 755 usr/bin/nova-api ${pkgdir}/usr/bin/nova-api
-  install -D -m 644 ${srcdir}/nova-api.service ${pkgdir}/usr/lib/systemd/system/nova-api.service
+                    "${pkgdir}/etc/nova/rootwrap.d/api-metadata.filters"
+  install -D -m 755 usr/bin/nova-api "${pkgdir}/usr/bin/nova-api"
+  install -D -m 644 "${srcdir}/nova-api.service" "${pkgdir}/usr/lib/systemd/system/nova-api.service"
 }
 
 package_nova-api-ec2() {
@@ -104,21 +104,22 @@ package_nova-api-ec2() {
 
   cd tmp
 
-  install -D -m 755 usr/bin/nova-api-ec2 ${pkgdir}/usr/bin/nova-api-ec2
-  install -D -m 644 ${srcdir}/nova-api-ec2.service ${pkgdir}/usr/lib/systemd/system/nova-api-ec2.service
+  install -D -m 755 usr/bin/nova-api-ec2 "${pkgdir}/usr/bin/nova-api-ec2"
+  install -D -m 644 "${srcdir}/nova-api-ec2.service" "${pkgdir}/usr/lib/systemd/system/nova-api-ec2.service"
 }
 
 package_nova-api-metadata() {
   pkgdesc+=" - metadata API frontend"
   depends=('nova-common')
+  conflicts=('nova-api')
 
   cd tmp
 
   install -D -m 644 etc/nova/rootwrap.d/api-metadata.filters \
-                    ${pkgdir}/etc/nova/rootwrap.d/api-metadata.filters
-  install -D -m 755 usr/bin/nova-api-metadata ${pkgdir}/usr/bin/nova-api-metadata
-  install -D -m 644 ${srcdir}/nova-api-metadata.service \
-                    ${pkgdir}/usr/lib/systemd/system/nova-api-meatadata.service
+                    "${pkgdir}/etc/nova/rootwrap.d/api-metadata.filters"
+  install -D -m 755 usr/bin/nova-api-metadata "${pkgdir}/usr/bin/nova-api-metadata"
+  install -D -m 644 "${srcdir}/nova-api-metadata.service" \
+                    "${pkgdir}/usr/lib/systemd/system/nova-api-meatadata.service"
 }
 
 package_nova-api-os-compute() {
@@ -127,9 +128,9 @@ package_nova-api-os-compute() {
 
   cd tmp
 
-  install -D -m 755 usr/bin/nova-api-os-compute ${pkgdir}/usr/bin/nova-api-os-compute
-  install -D -m 644 ${srcdir}/nova-api-os-compute.service \
-                    ${pkgdir}/usr/lib/systemd/system/nova-api-os-compute.service
+  install -D -m 755 usr/bin/nova-api-os-compute "${pkgdir}/usr/bin/nova-api-os-compute"
+  install -D -m 644 "${srcdir}/nova-api-os-compute.service" \
+                    "${pkgdir}/usr/lib/systemd/system/nova-api-os-compute.service"
 }
 
 package_nova-baremetal() {
@@ -138,12 +139,12 @@ package_nova-baremetal() {
 
   cd tmp
 
-  install -d ${pkgdir}/usr/bin/
-  install -m 755 usr/bin/nova-baremetal-deploy-helper ${pkgdir}/usr/bin/
-  install -m 755 usr/bin/nova-baremetal-manage ${pkgdir}/usr/bin/
+  install -d "${pkgdir}/usr/bin/"
+  install -m 755 usr/bin/nova-baremetal-deploy-helper "${pkgdir}/usr/bin/"
+  install -m 755 usr/bin/nova-baremetal-manage "${pkgdir}/usr/bin/"
 
-  install -D -m 644 ${srcdir}/nova-baremetal.service \
-                    ${pkgdir}/usr/lib/systemd/system/nova-baremetal.service
+  install -D -m 644 "${srcdir}/nova-baremetal.service" \
+                    "${pkgdir}/usr/lib/systemd/system/nova-baremetal.service"
 }
 
 package_nova-cells() {
@@ -152,8 +153,9 @@ package_nova-cells() {
 
   cd tmp
 
-  install -D -m 755 usr/bin/nova-cells ${pkgdir}/usr/bin/nova-cells
-  install -D -m 644 ${srcdir}/nova-cells.service ${pkgdir}/usr/lib/systemd/system/nova-cells.service
+  install -D -m 755 usr/bin/nova-cells "${pkgdir}/usr/bin/nova-cells"
+  install -D -m 644 "${srcdir}/nova-cells.service" \
+                    "${pkgdir}/usr/lib/systemd/system/nova-cells.service"
 }
 
 package_nova-cert() {
@@ -162,8 +164,9 @@ package_nova-cert() {
 
   cd tmp
 
-  install -D -m 755 usr/bin/nova-cert ${pkgdir}/usr/bin/nova-cert
-  install -D -m 644 ${srcdir}/nova-cert.service ${pkgdir}/usr/lib/systemd/system/nova-cert.service
+  install -D -m 755 usr/bin/nova-cert "${pkgdir}/usr/bin/nova-cert"
+  install -D -m 644 "${srcdir}/nova-cert.service" \
+                    "${pkgdir}/usr/lib/systemd/system/nova-cert.service"
 }
 
 package_nova-common() {
@@ -175,28 +178,28 @@ package_nova-common() {
 
   cd tmp
 
-  install -d ${pkgdir}/etc/nova/
-  install -m 640 etc/nova/api-paste.ini ${pkgdir}/etc/nova/
-  install -m 644 etc/nova/logging_sample.conf ${pkgdir}/etc/nova/logging.conf
-  install -m 640 etc/nova/policy.json ${pkgdir}/etc/nova/
-  install -m 640 etc/nova/nova.conf.sample ${pkgdir}/etc/nova/nova.conf
-  install -m 644 etc/nova/rootwrap.conf ${pkgdir}/etc/nova/
+  install -d "${pkgdir}/etc/nova/"
+  install -m 640 etc/nova/api-paste.ini "${pkgdir}/etc/nova/"
+  install -m 644 etc/nova/logging_sample.conf "${pkgdir}/etc/nova/logging.conf"
+  install -m 640 etc/nova/policy.json "${pkgdir}/etc/nova/"
+  install -m 640 etc/nova/nova.conf.sample "${pkgdir}/etc/nova/nova.conf"
+  install -m 644 etc/nova/rootwrap.conf "${pkgdir}/etc/nova/"
   
-  install -d ${pkgdir}/usr/bin/
-  install -m 755 usr/bin/nova-manage ${pkgdir}/usr/bin/
-  install -m 755 usr/bin/nova-rootwrap ${pkgdir}/usr/bin/
+  install -d -m 0750 "${pkgdir}/etc/sudoers.d/"
+  install -m 440 "${srcdir}/nova_sudoers" "${pkgdir}/etc/sudoers.d/"
 
-  install -d ${pkgdir}/usr/share/man/man1/
-  cp -R man/* ${pkgdir}/usr/share/man/man1/
+  install -d "${pkgdir}/usr/bin/"
+  install -m 755 usr/bin/nova-manage "${pkgdir}/usr/bin/"
+  install -m 755 usr/bin/nova-rootwrap "${pkgdir}/usr/bin/"
 
-  install -d -m 0750 ${pkgdir}/etc/sudoers.d/
-  install -m 440 ${srcdir}/nova_sudoers ${pkgdir}/etc/sudoers.d/
+  install -d "${pkgdir}/usr/share/man/man1/"
+  cp -R man/* "${pkgdir}/usr/share/man/man1/"
 
-  install -D -m 644 ${srcdir}/nova.tmpfiles ${pkgdir}/usr/lib/tmpfiles.d/nova.conf
+  install -D -m 644 "${srcdir}/nova.tmpfiles" "${pkgdir}/usr/lib/tmpfiles.d/nova.conf"
 
-  install -d -m 0770 ${pkgdir}/run/lock/nova/
-  install -d -m 0770 ${pkgdir}/var/lib/nova/
-  install -d -m 0770 ${pkgdir}/var/log/nova/
+  install -d -m 0770 "${pkgdir}/run/lock/nova/"
+  install -d -m 0770 "${pkgdir}/var/lib/nova/"
+  install -d -m 0770 "${pkgdir}/var/log/nova/"
 }
 
 package_nova-compute() {
@@ -214,9 +217,10 @@ package_nova-compute() {
 
   cd tmp
 
-  install -D -m 644 etc/nova/rootwrap.d/compute.filters ${pkgdir}/etc/nova/rootwrap.d/compute.filters
-  install -D -m 755 usr/bin/nova-compute ${pkgdir}/usr/bin/nova-compute
-  install -D -m 644 ${srcdir}/nova-compute.service ${pkgdir}/usr/lib/systemd/system/nova-compute.service
+  install -D -m 644 etc/nova/rootwrap.d/compute.filters "${pkgdir}/etc/nova/rootwrap.d/compute.filters"
+  install -D -m 755 usr/bin/nova-compute "${pkgdir}/usr/bin/nova-compute"
+  install -D -m 644 "${srcdir}/nova-compute.service" \
+                    "${pkgdir}/usr/lib/systemd/system/nova-compute.service"
 }
 
 package_nova-compute-kvm() {
@@ -228,8 +232,8 @@ package_nova-compute-kvm() {
 
   cd tmp
 
-  install -D -m 644 ${srcdir}/nova-compute.conf ${pkgdir}/etc/nova/nova-compute.conf
-  sed -i s/libvirt_type\=.*$/libvirt_type\=kvm/ ${pkgdir}/etc/nova/nova-compute.conf
+  install -D -m 644 "${srcdir}/nova-compute.conf" "${pkgdir}/etc/nova/nova-compute.conf"
+  sed -i s/libvirt_type\=.*$/libvirt_type\=kvm/ "${pkgdir}/etc/nova/nova-compute.conf"
 }
 
 package_nova-compute-lxc() {
@@ -240,8 +244,8 @@ package_nova-compute-lxc() {
 
   cd tmp
 
-  install -D -m 644 ${srcdir}/nova-compute.conf ${pkgdir}/etc/nova/nova-compute.conf
-  sed -i s/libvirt_type\=.*$/libvirt_type\=lxc/ ${pkgdir}/etc/nova/nova-compute.conf
+  install -D -m 644 "${srcdir}/nova-compute.conf" "${pkgdir}/etc/nova/nova-compute.conf"
+  sed -i s/libvirt_type\=.*$/libvirt_type\=lxc/ "${pkgdir}/etc/nova/nova-compute.conf"
 }
 
 package_nova-compute-qemu() {
@@ -253,8 +257,8 @@ package_nova-compute-qemu() {
 
   cd tmp
 
-  install -D -m 644 ${srcdir}/nova-compute.conf ${pkgdir}/etc/nova/nova-compute.conf
-  sed -i s/libvirt_type\=.*$/libvirt_type\=qemu/ ${pkgdir}/etc/nova/nova-compute.conf
+  install -D -m 644 "${srcdir}/nova-compute.conf" "${pkgdir}/etc/nova/nova-compute.conf"
+  sed -i s/libvirt_type\=.*$/libvirt_type\=qemu/ "${pkgdir}/etc/nova/nova-compute.conf"
 }
 
 package_nova-compute-uml() {
@@ -266,8 +270,8 @@ package_nova-compute-uml() {
 
   cd tmp
 
-  install -D -m 644 ${srcdir}/nova-compute.conf ${pkgdir}/etc/nova/nova-compute.conf
-  sed -i s/libvirt_type\=.*$/libvirt_type\=uml/ ${pkgdir}/etc/nova/nova-compute.conf
+  install -D -m 644 "${srcdir}/nova-compute.conf" "${pkgdir}/etc/nova/nova-compute.conf"
+  sed -i s/libvirt_type\=.*$/libvirt_type\=uml/ "${pkgdir}/etc/nova/nova-compute.conf"
 }
 
 package_nova-compute-xen() {
@@ -279,8 +283,8 @@ package_nova-compute-xen() {
 
   cd tmp
 
-  install -D -m 644 ${srcdir}/nova-compute.conf ${pkgdir}/etc/nova/nova-compute.conf
-  sed -i s/libvirt_type\=.*$/libvirt_type\=xen/ ${pkgdir}/etc/nova/nova-compute.conf
+  install -D -m 644 "${srcdir}/nova-compute.conf" "${pkgdir}/etc/nova/nova-compute.conf"
+  sed -i s/libvirt_type\=.*$/libvirt_type\=xen/ "${pkgdir}/etc/nova/nova-compute.conf"
 }
 
 package_nova-conductor() {
@@ -289,9 +293,9 @@ package_nova-conductor() {
 
   cd tmp
 
-  install -D -m 755 usr/bin/nova-conductor ${pkgdir}/usr/bin/nova-conductor
-  install -D -m 644 ${srcdir}/nova-conductor.service \
-                    ${pkgdir}/usr/lib/systemd/system/nova-conductor.service
+  install -D -m 755 usr/bin/nova-conductor "${pkgdir}/usr/bin/nova-conductor"
+  install -D -m 644 "${srcdir}/nova-conductor.service" \
+                    "${pkgdir}/usr/lib/systemd/system/nova-conductor.service"
 }
 
 package_nova-console() {
@@ -301,8 +305,9 @@ package_nova-console() {
 
   cd tmp
 
-  install -D -m 755 usr/bin/nova-console ${pkgdir}/usr/bin/nova-console
-  install -D -m 644 ${srcdir}/nova-console.service ${pkgdir}/usr/lib/systemd/system/nova-console.service
+  install -D -m 755 usr/bin/nova-console "${pkgdir}/usr/bin/nova-console"
+  install -D -m 644 "${srcdir}/nova-console.service" \
+                    "${pkgdir}/usr/lib/systemd/system/nova-console.service"
 }
 
 package_nova-consoleauth() {
@@ -311,9 +316,9 @@ package_nova-consoleauth() {
 
   cd tmp
 
-  install -D -m 755 usr/bin/nova-consoleauth ${pkgdir}/usr/bin/nova-consoleauth
-  install -D -m 644 ${srcdir}/nova-consoleauth.service \
-                    ${pkgdir}/usr/lib/systemd/system/nova-consoleauth.service
+  install -D -m 755 usr/bin/nova-consoleauth "${pkgdir}/usr/bin/nova-consoleauth"
+  install -D -m 644 "${srcdir}/nova-consoleauth.service" \
+                    "${pkgdir}/usr/lib/systemd/system/nova-consoleauth.service"
 }
 
 package_nova-network() {
@@ -328,14 +333,14 @@ package_nova-network() {
 
   cd tmp
 
-  install -D -m 644 etc/nova/rootwrap.d/network.filters ${pkgdir}/etc/nova/rootwrap.d/network.filters
+  install -D -m 644 etc/nova/rootwrap.d/network.filters "${pkgdir}/etc/nova/rootwrap.d/network.filters"
 
-  install -d ${pkgdir}/usr/bin/
-  install -m 755 usr/bin/nova-dhcpbridge ${pkgdir}/usr/bin/
-  install -m 755 usr/bin/nova-network ${pkgdir}/usr/bin/
+  install -d "${pkgdir}/usr/bin/"
+  install -m 755 usr/bin/nova-dhcpbridge "${pkgdir}/usr/bin/"
+  install -m 755 usr/bin/nova-network "${pkgdir}/usr/bin/"
 
-  install -D -m 644 ${srcdir}/nova-network.service \
-                    ${pkgdir}/usr/lib/systemd/system/nova-network.service
+  install -D -m 644 "${srcdir}/nova-network.service" \
+                    "${pkgdir}/usr/lib/systemd/system/nova-network.service"
 }
 
 package_nova-novncproxy() {
@@ -346,9 +351,9 @@ package_nova-novncproxy() {
 
   cd tmp
 
-  install -D -m 755 usr/bin/nova-novncproxy ${pkgdir}/usr/bin/nova-novncproxy
-  install -D -m 644 ${srcdir}/nova-novncproxy.service \
-                    ${pkgdir}/usr/lib/systemd/system/nova-novncproxy.service
+  install -D -m 755 usr/bin/nova-novncproxy "${pkgdir}/usr/bin/nova-novncproxy"
+  install -D -m 644 "${srcdir}/nova-novncproxy.service" \
+                    "${pkgdir}/usr/lib/systemd/system/nova-novncproxy.service"
 }
 
 package_nova-objectstore() {
@@ -357,9 +362,9 @@ package_nova-objectstore() {
 
   cd tmp
 
-  install -D -m 755 usr/bin/nova-objectstore ${pkgdir}/usr/bin/nova-objectstore
-  install -D -m 644 ${srcdir}/nova-objectstorage.service \
-                    ${pkgdir}/usr/lib/systemd/system/nova-objectstorage.service
+  install -D -m 755 usr/bin/nova-objectstore "${pkgdir}/usr/bin/nova-objectstore"
+  install -D -m 644 "${srcdir}/nova-objectstorage.service" \
+                    "${pkgdir}/usr/lib/systemd/system/nova-objectstorage.service"
 }
 
 package_nova-scheduler() {
@@ -368,13 +373,13 @@ package_nova-scheduler() {
 
   cd tmp
 
-  install -d ${pkgdir}/usr/bin/
-  install -m 755 usr/bin/nova-clear-rabbit-queues ${pkgdir}/usr/bin/
-  install -m 755 usr/bin/nova-rpc-zmq-receiver ${pkgdir}/usr/bin/
-  install -m 755 usr/bin/nova-scheduler ${pkgdir}/usr/bin/
+  install -d "${pkgdir}/usr/bin/"
+  install -m 755 usr/bin/nova-clear-rabbit-queues "${pkgdir}/usr/bin/"
+  install -m 755 usr/bin/nova-rpc-zmq-receiver "${pkgdir}/usr/bin/"
+  install -m 755 usr/bin/nova-scheduler "${pkgdir}/usr/bin/"
 
-  install -D -m 644 ${srcdir}/nova-scheduler.service \
-                    ${pkgdir}/usr/lib/systemd/system/nova-scheduler.service
+  install -D -m 644 "${srcdir}/nova-scheduler.service" \
+                    "${pkgdir}/usr/lib/systemd/system/nova-scheduler.service"
 }
 
 package_nova-spiceproxy() {
@@ -383,9 +388,9 @@ package_nova-spiceproxy() {
 
   cd tmp
 
-  install -D -m 755 usr/bin/nova-spicehtml5proxy ${pkgdir}/usr/bin/nova-spicehtml5proxy
-  install -D -m 644 ${srcdir}/nova-spiceproxy.service \
-                    ${pkgdir}/usr/lib/systemd/system/nova-spiceproxy.service
+  install -D -m 755 usr/bin/nova-spicehtml5proxy "${pkgdir}/usr/bin/nova-spicehtml5proxy"
+  install -D -m 644 "${srcdir}/nova-spiceproxy.service" \
+                    "${pkgdir}/usr/lib/systemd/system/nova-spiceproxy.service"
 }
 
 package_python2-nova() {
@@ -430,8 +435,8 @@ package_python2-nova() {
 
   cd tmp
 
-  install -d ${pkgdir}/usr/lib/
-  cp -R usr/lib/ ${pkgdir}/usr/
+  install -d "${pkgdir}/usr/lib/"
+  cp -R usr/lib/ "${pkgdir}/usr/"
 }
 
 # vim:set ts=2 sw=2 et:
