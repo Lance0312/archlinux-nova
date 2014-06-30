@@ -11,9 +11,10 @@ pkgname=('nova-api'
          'nova-common'
          'nova-compute'
          'nova-compute-kvm'
+         'nova-compute-libvirt'
          'nova-compute-lxc'
          'nova-compute-qemu'
-         'nova-compute-uml'
+         'nova-compute-vmware'
          'nova-compute-xen'
          'nova-conductor'
          'nova-console'
@@ -23,18 +24,19 @@ pkgname=('nova-api'
          'nova-objectstore'
          'nova-scheduler'
          'nova-spiceproxy'
+         'nova-xvpvncproxy'
          'python2-nova')
 
-pkgver=2013.2.3
+pkgver=2014.1.1
 pkgrel=1
 pkgdesc="OpenStack Compute"
-epoch=$(date +%Y%m%d)
 arch=(any)
 url="https://launchpad.net/nova"
 license=('Apache')
 depends=('python2' 'python2-setuptools')
-makedepends=('python2-setuptools')
-source=("$url/havana/2013.2.3/+download/$pkgbase-$pkgver.tar.gz"
+makedepends=('python2-setuptools' 'python2-tox' 'libmariadbclient' 'postgresql-libs' 'libxslt')
+install=nova.install
+source=("$url/icehouse/2014.1.1/+download/$pkgbase-$pkgver.tar.gz"
         "nova-api-ec2.service"
         "nova-api-metadata.service"
         "nova-api-os-compute.service"
@@ -42,7 +44,8 @@ source=("$url/havana/2013.2.3/+download/$pkgbase-$pkgver.tar.gz"
         "nova-baremetal.service"
         "nova-cells.service"
         "nova-cert.service"
-        "nova-compute.conf"
+        "nova-compute-libvirt.conf"
+        "nova-compute-others.conf"
         "nova-compute.service"
         "nova-conductor.service"
         "nova-console.service"
@@ -52,9 +55,10 @@ source=("$url/havana/2013.2.3/+download/$pkgbase-$pkgver.tar.gz"
         "nova-objectstorage.service"
         "nova-scheduler.service"
         "nova-spiceproxy.service"
+        "nova-xvpvncproxy.service"
         "nova.tmpfiles"
         "nova_sudoers")
-md5sums=('58a1d6005f9819ed9d5c70293fcc7493'
+md5sums=('f5d54370235f8795fb8072165f06ced4'
          '5f6a51b82bd293e2d854e2b5917dcd6c'
          '755796774821221622f09e600a0364b1'
          '3915c4fd03128a730ef08293c9010d7a'
@@ -62,7 +66,8 @@ md5sums=('58a1d6005f9819ed9d5c70293fcc7493'
          'e1762c4431d8abcfe1ad167e172ad858'
          '7cd1d470fcf8c6ecd77b4d521406c50f'
          'fe73717f98598f5640e23d15a672bde4'
-         'e5c43117a259feef7120847441a776a5'
+         '778ef8b3932d5ddcdafdf8feef5e681f'
+         '47865651092d445cb06a043856656b8a'
          'a45e6fd8b0580e92064b7bba9ef1df79'
          'c3a88bc9eb2ab808875cd79efdde6889'
          'bcfa4451076ee180ee867376065a13fc'
@@ -72,18 +77,21 @@ md5sums=('58a1d6005f9819ed9d5c70293fcc7493'
          '22b40866dfba304ce187cf2185ea82e7'
          '956e928f7242a17544e4e1dbde3cacf9'
          'e68d9e2895b8616aa35e4e4f2e807070'
+         '83090e438b06d5cafab9060389aa48a0'
          '27e809e427394f823cbc48cac3119a28'
          '539ce3151b597b066cb0e31e0a731b54')
 
 build() {
   cd "$pkgbase-$pkgver"
   /usr/bin/python2 setup.py build
-  /usr/bin/python2 setup.py build_sphinx
+  #/usr/bin/python2 setup.py build_sphinx
   /usr/bin/python2 setup.py install --root="$srcdir/tmp" \
                                     --install-data="/" \
                                     --optimize=1
+  /usr/bin/tox2 -egenconfig
+
   cp -R etc/ "$srcdir/tmp/"
-  cp -R doc/build/man/ "$srcdir/tmp/"
+  #cp -R doc/build/man/ "$srcdir/tmp/"
 }
 
 package_nova-api() {
@@ -171,7 +179,7 @@ package_nova-cert() {
 
 package_nova-common() {
   pkgdesc+=" - common"
-  install=nova.install
+  install=nova-common.install
   depends=('python2-nova')
   backup=('etc/nova/nova.conf'
           'etc/nova/api-paste.ini')
@@ -192,28 +200,21 @@ package_nova-common() {
   install -m 755 usr/bin/nova-manage "${pkgdir}/usr/bin/"
   install -m 755 usr/bin/nova-rootwrap "${pkgdir}/usr/bin/"
 
-  install -d "${pkgdir}/usr/share/man/man1/"
-  cp -R man/* "${pkgdir}/usr/share/man/man1/"
+  #install -d ${pkgdir}/usr/share/man/man1/
+  #cp -R man/* ${pkgdir}/usr/share/man/man1/
 
   install -D -m 644 "${srcdir}/nova.tmpfiles" "${pkgdir}/usr/lib/tmpfiles.d/nova.conf"
 
   install -d -m 0770 "${pkgdir}/run/lock/nova/"
   install -d -m 0770 "${pkgdir}/var/lib/nova/"
+  install -d -m 0770 "${pkgdir}/var/lib/nova/instances/"
   install -d -m 0770 "${pkgdir}/var/log/nova/"
 }
 
 package_nova-compute() {
   pkgdesc+=" - compute node"
-  depends=('curl'
-           'ebtables'
-           'gawk'
-           'iptables'
-           'libvirt'
-           'libvirt-python'
-           'lsb-release'
-           'nova-common'
-           'open-iscsi'
-           'parted')
+  depends=('nova-common'
+           'nova-compute-hypervisor')
 
   cd tmp
 
@@ -225,66 +226,80 @@ package_nova-compute() {
 
 package_nova-compute-kvm() {
   pkgdesc+=" - compute node (KVM)"
-  depends=('nova-compute'
+  depends=('nova-compute-libvirt'
            'qemu')
   provides=('nova-compute-hypervisor')
   backup=('etc/nova/nova-compute.conf')
 
   cd tmp
 
-  install -D -m 644 "${srcdir}/nova-compute.conf" "${pkgdir}/etc/nova/nova-compute.conf"
-  sed -i s/libvirt_type\=.*$/libvirt_type\=kvm/ "${pkgdir}/etc/nova/nova-compute.conf"
+  install -D -m 640 "${srcdir}/nova-compute-libvirt.conf" "${pkgdir}/etc/nova/nova-compute.conf"
+  sed -i s/virt_type\=.*$/virt_type\=kvm/ "${pkgdir}/etc/nova/nova-compute.conf"
+}
+
+package_nova-compute-libvirt() {
+  pkgdesc+=" - compute node libvirt support"
+  depends=('dnsmasq'
+           'dmidecode'
+           'ebtables'
+           'iptables'
+           'libvirt'
+           'libvirt-python'
+           'lsb-release'
+           'nova-compute'
+           'open-iscsi'
+           'parted')
 }
 
 package_nova-compute-lxc() {
   pkgdesc+=" - compute node (LXC)"
+  depends=('nova-compute-libvirt')
+  provides=('nova-compute-hypervisor')
+  backup=('etc/nova/nova-compute.conf')
+
+  cd tmp
+
+  install -D -m 640 "${srcdir}/nova-compute-libvirt.conf" "${pkgdir}/etc/nova/nova-compute.conf"
+  sed -i s/virt_type\=.*$/virt_type\=lxc/ "${pkgdir}/etc/nova/nova-compute.conf"
+}
+
+package_nova-compute-qemu() {
+  pkgdesc+=" - compute node (QEmu)"
+  depends=('nova-compute-libvirt'
+           'qemu')
+  provides=('nova-compute-hypervisor')
+  backup=('etc/nova/nova-compute.conf')
+
+  cd tmp
+
+  install -D -m 640 "${srcdir}/nova-compute-libvirt.conf" "${pkgdir}/etc/nova/nova-compute.conf"
+  sed -i s/virt_type\=.*$/virt_type\=qemu/ "${pkgdir}/etc/nova/nova-compute.conf"
+}
+
+package_nova-compute-vmware() {
+  pkgdesc+=" - compute node (VMware)"
   depends=('nova-compute')
   provides=('nova-compute-hypervisor')
   backup=('etc/nova/nova-compute.conf')
 
   cd tmp
 
-  install -D -m 644 "${srcdir}/nova-compute.conf" "${pkgdir}/etc/nova/nova-compute.conf"
-  sed -i s/libvirt_type\=.*$/libvirt_type\=lxc/ "${pkgdir}/etc/nova/nova-compute.conf"
-}
-
-package_nova-compute-qemu() {
-  pkgdesc+=" - compute node (QEmu)"
-  depends=('nova-compute'
-           'qemu')
-  provides=('nova-compute-hypervisor')
-  backup=('etc/nova/nova-compute.conf')
-
-  cd tmp
-
-  install -D -m 644 "${srcdir}/nova-compute.conf" "${pkgdir}/etc/nova/nova-compute.conf"
-  sed -i s/libvirt_type\=.*$/libvirt_type\=qemu/ "${pkgdir}/etc/nova/nova-compute.conf"
-}
-
-package_nova-compute-uml() {
-  pkgdesc+=" - compute node (UserModeLinux)"
-  depends=('nova-compute'
-           'linux-usermode')
-  provides=('nova-compute-hypervisor')
-  backup=('etc/nova/nova-compute.conf')
-
-  cd tmp
-
-  install -D -m 644 "${srcdir}/nova-compute.conf" "${pkgdir}/etc/nova/nova-compute.conf"
-  sed -i s/libvirt_type\=.*$/libvirt_type\=uml/ "${pkgdir}/etc/nova/nova-compute.conf"
+  install -D -m 640 "${srcdir}/nova-compute-others.conf" "${pkgdir}/etc/nova/nova-compute.conf"
+  sed -i s/compute_type\=.*$/compute_type\=vmwareapi.VMwareVCDriver/ \
+         "${pkgdir}/etc/nova/nova-compute.conf"
 }
 
 package_nova-compute-xen() {
   pkgdesc+=" - compute node (Xen)"
-  depends=('nova-compute'
-           'xen-4.3-git')
+  depends=('nova-compute-libvirt'
+           'xen')
   provides=('nova-compute-hypervisor')
   backup=('etc/nova/nova-compute.conf')
 
   cd tmp
 
-  install -D -m 644 "${srcdir}/nova-compute.conf" "${pkgdir}/etc/nova/nova-compute.conf"
-  sed -i s/libvirt_type\=.*$/libvirt_type\=xen/ "${pkgdir}/etc/nova/nova-compute.conf"
+  install -D -m 640 "${srcdir}/nova-compute-libvirt.conf" "${pkgdir}/etc/nova/nova-compute.conf"
+  sed -i s/virt_type\=.*$/virt_type\=xen/ "${pkgdir}/etc/nova/nova-compute.conf"
 }
 
 package_nova-conductor() {
@@ -325,6 +340,7 @@ package_nova-network() {
   pkgdesc+=" - Network manager"
   depends=('bridge-utils'
            'dnsmasq'
+           'ebtables'
            'iptables'
            'iputils'
            'netcat'
@@ -346,8 +362,7 @@ package_nova-network() {
 package_nova-novncproxy() {
   pkgdesc+=" - NoVNC proxy"
   depends=('nova-common'
-           'novnc'
-           'websockify')
+           'novnc')
 
   cd tmp
 
@@ -375,7 +390,6 @@ package_nova-scheduler() {
 
   install -d "${pkgdir}/usr/bin/"
   install -m 755 usr/bin/nova-clear-rabbit-queues "${pkgdir}/usr/bin/"
-  install -m 755 usr/bin/nova-rpc-zmq-receiver "${pkgdir}/usr/bin/"
   install -m 755 usr/bin/nova-scheduler "${pkgdir}/usr/bin/"
 
   install -D -m 644 "${srcdir}/nova-scheduler.service" \
@@ -393,45 +407,21 @@ package_nova-spiceproxy() {
                     "${pkgdir}/usr/lib/systemd/system/nova-spiceproxy.service"
 }
 
+package_nova-xvpvncproxy() {
+  pkgdesc+=" - XVP VNC proxy"
+  depends=('nova-common')
+
+  cd tmp
+
+  install -D -m 755 usr/bin/nova-xvpvncproxy "${pkgdir}/usr/bin/nova-xvpvncproxy"
+  install -D -m 644 "${srcdir}/nova-xvpvncproxy.service" \
+                    "${pkgdir}/usr/lib/systemd/system/nova-xvpvncproxy.service"
+}
+
 package_python2-nova() {
   pkgdesc+=" - Python library"
-  depends=('openssh' 
-           'openssl'
-           'python2-amqplib>=0.6.1'
-           'python2-anyjson>=0.3.3'
-           'python2-babel>=1.3.0'
-           'python2-boto>=2.4.0'
-           'python2-cinderclient>=1.0.6'
-           'python2-eventlet>=0.13.0'
-           'python2-glanceclient>=0.9.0'
-           'python2-greenlet>=0.3.2'
-           'python2-iso8601>=0.1.8'
-           'python2-jinja'
-           'python2-jsonschema>=1.3.0'
-           'python2-keystoneclient>=0.3.2'
-           'python2-kombu>=2.4.8'
-           'python2-lxml>=2.3'
-           'python2-migrate>=0.7.2'
-           'python2-neutronclient>=2.3.0'
-           'python2-neutronclient<3.0.0'
-           'python2-oslo-config>=1.2.0'
-           'python2-paramiko>=1.8.0'
-           'python2-paste'
-           'python2-paste-deploy>=1.5.0'
-           'python2-pbr>=0.5.21'
-           'python2-pbr<1.0.0'
-           'python2-pyasn1'
-           'python2-routes>=1.12.3'
-           'python2-six>=1.4.1'
-           'python2-sqlalchemy-0.7.9'
-           'python2-stevedore>=0.10'
-           'python2-suds>=0.4'
-           'python2-webob>=1.2.3'
-           'python2-webob<1.3.0'
-           'sudo'
-           'websockify>=0.5.1'
-           'websockify<0.6')
-  optdepends=('mysql-python')
+  depends=('python2-pip' 'libxslt')
+  install=python2-nova.install
 
   cd tmp
 

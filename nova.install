@@ -1,24 +1,12 @@
 post_install() {
-  getent group nova &>/dev/null || groupadd nova >/dev/null
-  getent passwd nova &>/dev/null || useradd  -d /var/lib/nova -g nova -s /bin/false nova >/dev/null
-
-  chmod 755 /etc/nova
-  chown -R root:nova /etc/nova
-  chown root:root /etc/nova/rootwrap.conf
-  chown -R root:root /etc/nova/rootwrap.d
-  chown nova /var/log/nova
-  chown nova:nova /var/lib/nova
-  chown nova:root /run/lock/nova
+  chown -Rf root:nova /etc/nova
+  chown -f root:root /etc/nova/rootwrap.conf
+  chown -Rf root:root /etc/nova/rootwrap.d
+  chown -Rf nova:nova /var/lib/nova
 }
 
 post_upgrade() {
   post_install
-}
-
-pre_remove() {
-  getent passwd nova &>/dev/null && userdel nova >/dev/null
-  getent group nova &>/dev/null && groupdel nova >/dev/null
-  true
 }
 
 # vim:set ts=2 sw=2 et:
